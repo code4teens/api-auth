@@ -6,5 +6,4 @@
 .vscode
 Dockerfile
 README.md
-cloud_sql_proxy
 venv
