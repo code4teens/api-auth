@@ -12,7 +12,7 @@ auth = Blueprint('auth', __name__)
 def create_user():
     keys = ['id', 'name', 'discriminator', 'display_name']
 
-    if all(key in keys for key in request.json):
+    if sorted([key for key in request.json]) == sorted(keys):
         id = request.json.get('id')
         name = request.json.get('name')
         discriminator = request.json.get('discriminator')
@@ -60,7 +60,7 @@ def create_user():
         data = {
             'title': 'Bad Request',
             'status': 400,
-            'detail': 'Missing some keys'
+            'detail': 'Missing some keys or contains extra keys'
         }
 
         return data, 400
@@ -68,13 +68,15 @@ def create_user():
 
 @auth.route('/login', methods=['POST'])
 def login():
-    id = request.json.get('id')
-    user = User.query.filter_by(id=id).one_or_none()
+    keys = ['id', 'password']
 
-    if user is not None:
-        password = request.json.get('password')
+    if sorted([key for key in request.json]) == sorted(keys):
+        id = request.json.get('id')
+        user = User.query.filter_by(id=id).one_or_none()
 
-        if password is not None:
+        if user is not None:
+            password = request.json.get('password')
+
             if bcrypt.checkpw(
                 password.encode('utf-8'),
                 user.password.encode('utf-8')
@@ -94,20 +96,20 @@ def login():
                 }
 
                 return data, 401
+
         else:
             data = {
-                'title': 'Bad Request',
-                'status': 400,
-                'detail': 'Password missing'
+                'title': 'Not Found',
+                'status': 404,
+                'detail': f'User {id} not found'
             }
 
-            return data, 400
-
+            return data, 404
     else:
         data = {
-            'title': 'Not Found',
-            'status': 404,
-            'detail': f'User {id} not found'
+            'title': 'Bad Request',
+            'status': 400,
+            'detail': 'Missing some keys or contains extra keys'
         }
 
-        return data, 404
+        return data, 400
