@@ -3,10 +3,10 @@ from flask import Blueprint, request
 
 from models import User
 
-auth = Blueprint('auth', __name__)
+api_auth = Blueprint('api_auth', __name__)
 
 
-@auth.route('/login', methods=['POST'])
+@api_auth.route('/auth/login', methods=['POST'])
 def login():
     keys = ['id', 'password']
 

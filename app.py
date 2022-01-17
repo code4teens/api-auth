@@ -1,10 +1,10 @@
 from flask import Flask
 
-from auth import auth
+from api_auth import api_auth
 from database import db_session
 
 app = Flask(__name__)
-app.register_blueprint(auth)
+app.register_blueprint(api_auth)
 
 
 @app.teardown_appcontext
