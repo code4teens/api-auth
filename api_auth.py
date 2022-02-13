@@ -36,7 +36,6 @@ def login():
                 }
 
                 return data, 401
-
         else:
             data = {
                 'title': 'Not Found',
